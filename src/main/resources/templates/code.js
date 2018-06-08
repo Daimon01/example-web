@@ -10,7 +10,7 @@ $( "#login" ).submit(function( event ) {
 	pass = $form.find("input[name='pass']").val();
  
   // Send the data using post
-  var posting = $.post( "/update", { user: user, pass:pass } );
+  var posting = $.post( "/join", { user: user, pass:pass } );
  
   // Put the results in a div
   posting.done(function( data ) {
@@ -18,19 +18,19 @@ $( "#login" ).submit(function( event ) {
   });
 });
 
-$("#refreshMsgs").onclick(function(event){
+$("#refreshMsgs").click(function(event){
 	$.get("/get_msg").done(function(data){
 		console.log(data);
 	});
 });
 
-$("#refreshUsers").onclick(function(event){
-	$.get("/get_msg").done(function(data){
+$("#refreshUsers").click(function(event){
+	$.get("/list_users").done(function(data){
 		console.log(data);
 	});
 });
 
-$("#postBtn").onclick(function(event){
+$("#postBtn").click(function(event){
 	$.post("/post_msg").done(function(data){
 		console.log(data);
 	});
