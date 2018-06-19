@@ -30,8 +30,12 @@ $("#refreshUsers").click(function(event){
 	});
 });
 
-$("#postBtn").click(function(event){
-	$.post("/post_msg").done(function(data){
+$("#post").submit(function(event){
+	 event.preventDefault();
+	 var $form = $( this ),
+	 message = $form.find( "input[name='message']" ).val(),
+	addressee = $form.find("input[name='addressee']").val();
+	$.post("/post_msg", {message: message, addressee: addressee} ).done(function(data){
 		console.log(data);
 	});
 });

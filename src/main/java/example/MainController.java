@@ -4,7 +4,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 @Controller
@@ -24,6 +26,7 @@ public class MainController {
         return "code.js";
     }
 
+
     @GetMapping("/task1")
     public String task1(@RequestParam(name = "word") String word, Model model) throws SQLException {
         model.addAttribute("wordSign", word);
@@ -36,10 +39,17 @@ public class MainController {
     @PostMapping("/join")
     @ResponseBody
 
-    public String join(@RequestParam(name = "user") String user, @RequestParam(name = "pass") String pass) throws SQLException {
-        DataAccess data = new DataAccess();
-        data.createUser(user, pass);
-        return "";
+    public String join(@RequestParam(name = "user") String user,
+                       @RequestParam(name = "pass") String pass,
+                       HttpSession session) throws SQLException {
+        DataAccess login = new DataAccess();
+        boolean log = login.getUser(user, pass);
+        if (log == false) {
+            DataAccess data = new DataAccess();
+            data.createUser(user, pass);
+        }
+        session.setAttribute("current_user", user);
+        return "Вы вошли как" + user;
     }
 
     @GetMapping("/get_msg")
@@ -58,10 +68,18 @@ public class MainController {
         return u;
     }
 
-    @GetMapping("/post_msg")
+    @PostMapping("/post_msg")
     @ResponseBody
 
-    public String post_msg(@RequestParam(name = "msg") String msg) throws SQLException {
-        return "";
+    public String post_msg( @RequestParam(name = "message") String message,
+                            @RequestParam(name = "addressee") String addressee,
+    HttpSession session) throws Exception {
+        DataAccess data= new DataAccess();
+        if (session.getAttribute("current_user") == null){
+            throw new Exception();
+        }
+        String send = data.sendMessage((String) session.getAttribute("current_user"), LocalDateTime.now(),message,addressee);
+
+        return send;
     }
 }
