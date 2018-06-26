@@ -73,4 +73,11 @@ public class DataAccess {
         state.close();
         return "Сообщение отправлено пользователю" + addressee;
     }
+    public ArrayList<String> getMeesage(String user) throws SQLException {
+        Connection connect = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres",
+                "postgres", "123");
+        PreparedStatement state = connect.prepareStatement("select message from message where addresee = ?");
+        state.setString(1, user);
+        ResultSet res = state.executeQuery();
+        ArrayList<String> list = new ArrayList<>();
 }
